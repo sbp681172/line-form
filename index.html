@@ -41,9 +41,47 @@
         <input type="text" id="name" placeholder="請輸入您的真實姓名">
       </div>
 
-      <div class="form-group">
-        <label for="dept">部門 / 職稱（選填）</label>
-        <input type="text" id="dept" placeholder="例如：業務部 / 專案經理">
+     <div class="form-group">
+        <label for="dept">服務單位（選填）</label>
+        <select id="dept" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; background: white;">
+          <option value="">請選擇服務單位（可不填）</option>
+
+          <!-- 刑事局與中央/專業單位 -->
+          <option value="刑事警察局">刑事警察局</option>
+          <option value="其他專業單位">其他專業單位（警政署、國道、航警、鐵路、保字頭等）</option>
+
+          <!-- 六都直轄市 -->
+          <option value="臺北市警察局">臺北市警察局</option>
+          <option value="新北市警察局">新北市警察局</option>
+          <option value="桃園市警察局">桃園市警察局</option>
+          <option value="臺中市警察局">臺中市警察局</option>
+          <option value="臺南市警察局">臺南市警察局</option>
+          <option value="高雄市警察局">高雄市警察局</option>
+
+          <!-- 北部/中部縣市 -->
+          <option value="基隆市警察局">基隆市警察局</option>
+          <option value="新竹市警察局">新竹市警察局</option>
+          <option value="新竹縣警察局">新竹縣警察局</option>
+          <option value="苗栗縣警察局">苗栗縣警察局</option>
+          <option value="彰化縣警察局">彰化縣警察局</option>
+          <option value="南投縣警察局">南投縣警察局</option>
+
+          <!-- 南部縣市 -->
+          <option value="雲林縣警察局">雲林縣警察局</option>
+          <option value="嘉義市警察局">嘉義市警察局</option>
+          <option value="嘉義縣警察局">嘉義縣警察局</option>
+          <option value="屏東縣警察局">屏東縣警察局</option>
+
+          <!-- 東部縣市 -->
+          <option value="宜蘭縣警察局">宜蘭縣警察局</option>
+          <option value="花蓮縣警察局">花蓮縣警察局</option>
+          <option value="臺東縣警察局">臺東縣警察局</option>
+
+          <!-- 離島縣市 -->
+          <option value="澎湖縣警察局">澎湖縣警察局</option>
+          <option value="金門縣警察局">金門縣警察局</option>
+          <option value="連江縣警察局">連江縣警察局（馬祖）</option>
+        </select>
       </div>
 
       <button id="submitBtn">確認送出</button>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>群組身分登記</title>
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f4f5f7; margin: 0; padding: 20px; display: flex; justify-content: center; }
+    .card { background: white; max-width: 420px; width: 100%; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); box-sizing: border-box; }
+    h2 { margin-top: 0; color: #1DB446; text-align: center; }
+    .profile-box { display: flex; align-items: center; background: #eef9f1; padding: 12px; border-radius: 8px; margin-bottom: 20px; }
+    .profile-box img { width: 50px; height: 50px; border-radius: 50%; margin-right: 12px; object-fit: cover; }
+    .profile-info { font-size: 14px; color: #333; }
+    .form-group { margin-bottom: 16px; }
+    label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 14px; color: #444; }
+    input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; box-sizing: border-box; }
+    button { width: 100%; padding: 12px; background-color: #06C755; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
+    button:disabled { background-color: #a0e5b7; }
+    #loading { text-align: center; padding: 40px 0; font-size: 16px; color: #666; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>群組身分登記</h2>
+    
+    <div id="loading">LINE 驗證載入中，請稍候...</div>
+
+    <div id="formCard" style="display: none;">
+      <div class="profile-box">
+        <img id="avatar" src="https://via.placeholder.com/50" alt="大頭照">
+        <div class="profile-info">
+          <div>已偵測 LINE 暱稱：</div>
+          <strong id="lineName" style="font-size: 16px; color: #06C755;">載入中...</strong>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="name">真實姓名 <span style="color:red;">*</span></label>
+        <input type="text" id="name" placeholder="請輸入您的真實姓名">
+      </div>
+
+      <div class="form-group">
+        <label for="dept">部門 / 職稱（選填）</label>
+        <input type="text" id="dept" placeholder="例如：業務部 / 專案經理">
+      </div>
+
+      <button id="submitBtn">確認送出</button>
+    </div>
+  </div>
+
+  <script>
+    // ===== 參數設定 =====
+    const LIFF_ID = "2012008151-2bcmM8Of";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycby-IhTQMKb-I1NYFlDhbvyozjlbNVvht_EdqZ16SU18i5oWQdwgTGmtkOsN_M6qcoFuvw/exec";
+    // ====================
+
+    let currentProfile = {};
+
+    async function initLIFF() {
+      try {
+        await liff.init({ liffId: LIFF_ID });
+        if (!liff.isLoggedIn()) {
+          liff.login();
+          return;
+        }
+
+        currentProfile = await liff.getProfile();
+        document.getElementById("lineName").textContent = currentProfile.displayName;
+        if (currentProfile.pictureUrl) {
+          document.getElementById("avatar").src = currentProfile.pictureUrl;
+        }
+
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("formCard").style.display = "block";
+      } catch (err) {
+        document.getElementById("loading").innerHTML = "請在 LINE 內點開此連結來填寫。<br><small style='color:red'>" + err + "</small>";
+      }
+    }
+
+    document.getElementById("submitBtn").addEventListener("click", async () => {
+      const name = document.getElementById("name").value.trim();
+      const dept = document.getElementById("dept").value.trim();
+
+      if (!name) {
+        alert("請填寫真實姓名！");
+        return;
+      }
+
+      const btn = document.getElementById("submitBtn");
+      btn.disabled = true;
+      btn.innerText = "資料送出中...";
+
+      const payload = {
+        name: name,
+        department: dept,
+        lineName: currentProfile.displayName,
+        userId: currentProfile.userId,
+        pictureUrl: currentProfile.pictureUrl || ""
+      };
+
+      try {
+        await fetch(GAS_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+
+        alert("登記成功！感謝您的配合。");
+        liff.closeWindow();
+      } catch (e) {
+        alert("送出失敗，請稍後再試：" + e);
+        btn.disabled = false;
+        btn.innerText = "確認送出";
+      }
+    });
+
+    initLIFF();
+  </script>
+</body>
+</html>
